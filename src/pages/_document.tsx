@@ -8,6 +8,11 @@ export default function Document() {
                     rel='stylesheet'
                     href='https://site-assets.fontawesome.com/releases/v6.1.2/css/all.css?fbclid=IwAR2Lefv1ZTLJsKEsnl4HGMf5XRZuPqx5yOFnFaOFbVgCiCeU87S0up6ptKU'
                 />
+                <link
+                    rel='shortcut icon'
+                    href='/favicon.png'
+                    type='image/png'
+                />
             </Head>
 
             <body>

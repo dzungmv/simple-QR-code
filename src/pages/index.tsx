@@ -3,6 +3,7 @@ import QRManager from '@/components/qr-manager';
 import { selectBank, setBank } from '@/redux/slice/bankSlice';
 import { BankProps } from '@/types';
 import axios from 'axios';
+import Head from 'next/head';
 import { ReactNode, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -20,7 +21,14 @@ export default function Home() {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    return <QRManager />;
+    return (
+        <>
+            <Head>
+                <title>QR Manager</title>
+            </Head>
+            <QRManager />
+        </>
+    );
 }
 
 Home.getLayout = (page: ReactNode) => <MainLayout>{page}</MainLayout>;
