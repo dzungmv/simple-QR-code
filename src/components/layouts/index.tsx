@@ -14,7 +14,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
             <header className='w-full h-[50px] fixed top-0 right-0 left-0 flex items-center shadow-sm px-5 z-50 bg-white'>
                 <Header />
             </header>
-            <section className='flex items-start !overflow-y-hidden max-h-screen w-full'>
+            <section className='flex items-start max-h-screen w-full'>
                 <div className='w-[22%] tablet:w-auto'>
                     <aside className='pt-[64px] pl-2 border-r pr-3 fixed overflow-auto h-full w-[22%] tablet:w-auto bg-white'>
                         <NavBar />

@@ -128,7 +128,7 @@ const SignupPage = () => {
                         })}
                     </div>
                 </div>
-                <div className='flex items-center flex-col'>
+                <div className='flex items-center flex-col mobile:w-full'>
                     <div className='items-center justify-center mb-[33px] hidden laptop:flex tablet:flex'>
                         <figure className='w-[136px] flex items-center justify-center'>
                             <ImageCustom
@@ -137,7 +137,7 @@ const SignupPage = () => {
                             />
                         </figure>
                     </div>
-                    <section className='bg-white p-20 py-12 shadow-[0_20px_46px_0_rgba(0,0,0,.1)] rounded-[20px] mobile:px-4 mobile:rounded-none mobile:shadow-none'>
+                    <section className='bg-white w-full p-20 py-12 shadow-[0_20px_46px_0_rgba(0,0,0,.1)] rounded-[20px] mobile:px-4 mobile:rounded-none mobile:shadow-none'>
                         <h1 className='text-[28px] font-bold text-[#272b41] max-w-[450px] mb-8 text-center'>
                             Đăng kí tài khoản mới
                         </h1>

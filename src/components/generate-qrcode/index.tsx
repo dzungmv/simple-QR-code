@@ -1,17 +1,18 @@
 'use client';
 
+import { Player } from '@lottiefiles/react-lottie-player';
 import { useEffect, useRef, useState } from 'react';
 import swal from 'sweetalert';
-import { Player } from '@lottiefiles/react-lottie-player';
 
+import { selectBank } from '@/redux/slice/bankSlice';
+import { selectUser } from '@/redux/slice/userSlice';
+import { BankProps, UserProps } from '@/types';
+import { getDatabase, ref, set } from 'firebase/database';
+import { useSelector } from 'react-redux';
 import qr_animation from '../../../public/qr-animation.json';
 import qr_scan_animation from '../../../public/scan-qr.json';
 import ImageCustom from '../image';
 import Modal from '../modal';
-import { getDatabase, onValue, ref, set } from 'firebase/database';
-import { UserProps } from '@/types';
-import { useSelector } from 'react-redux';
-import { selectUser } from '@/redux/slice/userSlice';
 
 const QRCode = require('qrcode');
 const QrReader = require('react-qr-reader');
@@ -19,8 +20,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const GenerateQRCode: React.FC = () => {
     const user: UserProps = useSelector(selectUser);
-
-    const [testQRCode, setTestQRCode] = useState<string>('');
+    const banks = useSelector(selectBank);
 
     const [nameBank, setNameBank] = useState<string>('');
     const [accountNumber, setAccountNumber] = useState<string>('');
@@ -34,9 +34,12 @@ const GenerateQRCode: React.FC = () => {
     const [access, setAccess] = useState<boolean>(false);
     const [dataScan, setDataScan] = useState<string>('');
 
-    const nameBankRef = useRef<HTMLInputElement>(null);
-
-    console.log('QRCODE', QRCode);
+    const containerSelectBankRef = useRef<HTMLDivElement>(null);
+    const [searchBankValue, setSearchBankValue] = useState<string>('');
+    const [selectBankContainer, setSelectBankContainer] =
+        useState<boolean>(false);
+    const [resultSearchBanks, setResultSearchBanks] =
+        useState<BankProps[]>(banks);
 
     const HANDLE = {
         generateQRCode: () => {
@@ -50,52 +53,36 @@ const GenerateQRCode: React.FC = () => {
                 return;
             }
 
-            // QRCode.toDataURL(
-            //     JSON.stringify({
-            //         nameBank,
-            //         accountNumber,
-            //         username,
-            //     })
-            // )
-            //     .then(async (url: string) => {
-            //         console.log('check QRCODE:', url);
-
-            //         setQRCode(url);
-            //         const db = getDatabase();
-
-            //         await set(ref(db, 'qr-codes/' + uuidv4()), {
-            //             userId: user?.uid,
-            //             username: user?.displayName,
-            //             email: user?.email,
-            //             qrCode: url,
-            //             qrStatus: 'active',
-            //             qrData: {
-            //                 nameBank,
-            //                 accountNumber,
-            //                 accountName: username,
-            //             },
-            //             dateCreated: new Date().toISOString(),
-            //         });
-
-            //         swal('Thông báo', 'Tạo QR Code thành công', 'success');
-            //     })
-            //     .catch((err: any) => {
-            //         swal('Thông báo', 'Có lỗi xảy ra', 'error');
-            //     });
-
-            QRCode.create(
+            QRCode.toDataURL(
                 JSON.stringify({
                     nameBank,
                     accountNumber,
                     username,
-                }),
-                {
-                    errorCorrectionLevel: 'H',
-                    type: 'image/jpeg',
-                    quality: 0.3,
-                    margin: 1,
-                }
-            );
+                })
+            )
+                .then(async (url: string) => {
+                    setQRCode(url);
+                    const db = getDatabase();
+
+                    await set(ref(db, 'qr-codes/' + uuidv4()), {
+                        userId: user?.uid,
+                        username: user?.displayName,
+                        email: user?.email,
+                        qrCode: url,
+                        qrStatus: 'active',
+                        qrData: {
+                            nameBank,
+                            accountNumber,
+                            accountName: username,
+                        },
+                        dateCreated: new Date().toISOString(),
+                    });
+
+                    swal('Thông báo', 'Tạo QR Code thành công', 'success');
+                })
+                .catch((err: any) => {
+                    swal('Thông báo', 'Có lỗi xảy ra', 'error');
+                });
         },
         resetQR: () => {
             setQRCode('');
@@ -103,7 +90,6 @@ const GenerateQRCode: React.FC = () => {
             setAccountNumber('');
             setUsername('');
             setCheckboxRule(false);
-            nameBankRef.current?.focus();
         },
         openModalQRCode: () => {
             setOpenModal(true);
@@ -133,6 +119,41 @@ const GenerateQRCode: React.FC = () => {
         closeCamera: () => {
             setAccess(false);
         },
+        searchBank: () => {
+            console.log('searchBankValue', typeof searchBankValue);
+
+            const res = banks.filter((bank: BankProps) => {
+                console.log('bank', typeof bank.bin);
+
+                return (
+                    bank.name
+                        .toLowerCase()
+                        .includes(searchBankValue.toLowerCase()) ||
+                    bank.shortName
+                        .toLocaleLowerCase()
+                        .includes(searchBankValue.toLowerCase()) ||
+                    bank.bin.includes(searchBankValue)
+                );
+            });
+
+            setResultSearchBanks(res);
+        },
+
+        selectBank: (name: string) => {
+            setNameBank(name);
+            // setResultSearchBanks(banks);
+            setSelectBankContainer(false);
+            setSearchBankValue('');
+        },
+
+        changeAccountNumber(value: string) {
+            setAccountNumber(value);
+            banks.filter((bank: BankProps) => {
+                if (value.includes(bank.bin)) {
+                    setNameBank(bank.name);
+                }
+            });
+        },
     };
 
     useEffect(() => {
@@ -154,9 +175,32 @@ const GenerateQRCode: React.FC = () => {
         }
     }, [dataScan]);
 
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (
+                containerSelectBankRef.current &&
+                !containerSelectBankRef.current.contains(event.target)
+            ) {
+                setSelectBankContainer(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    });
+
+    useEffect(() => {
+        if (searchBankValue === '') {
+            setResultSearchBanks(banks);
+        }
+    }, [searchBankValue, banks]);
+
     return (
         <>
-            <section className='w-[90%] mx-auto'>
+            <section className='w-[90%] mx-auto onlyTablet:w-[80%] mobile:w-full'>
                 <div className='flex justify-end'>
                     <button
                         className='px-4 py-3 flex items-center justify-center gap-1 w-fit bg-violet-500 rounded-lg shadow-md hover:shadow-lg hover:bg-violet-600 text-white'
@@ -166,8 +210,8 @@ const GenerateQRCode: React.FC = () => {
                         Scan banking QR Code
                     </button>
                 </div>
-                <div className=' flex items-start gap-5 mt-5'>
-                    <div className='w-[60%] rounded-xl bg-white px-4 py-3'>
+                <div className=' flex items-start gap-5 mt-5 tablet:mt-2 tablet:flex-col-reverse'>
+                    <div className='w-[60%] rounded-xl bg-white px-4 py-3 tablet:w-full'>
                         <h2 className='text-2xl font-medium'>Tạo mã QR</h2>
 
                         <div className='mt-4 ml-1'>
@@ -175,16 +219,82 @@ const GenerateQRCode: React.FC = () => {
                                 <label className='text-[15px] mb-2'>
                                     Ngân hàng thụ hưởng
                                 </label>
-                                <input
-                                    type='text'
-                                    ref={nameBankRef}
-                                    value={nameBank}
-                                    placeholder='Nhập ngân hàng thụ hưởng'
-                                    className='text-[15px] mt-1 p-[5px] pl-[10px] w-full h-[50px] outline-none bg-[#eff2f7] rounded-xl'
-                                    onChange={(e) =>
-                                        setNameBank(e.target.value)
-                                    }
-                                />
+                                <div className='relative'>
+                                    <div
+                                        className='text-[15px] mt-1 p-[5px] pl-[10px] pr-3 w-full h-[50px] outline-none bg-[#eff2f7] rounded-xl flex items-center justify-between text-gray-400 cursor-pointer'
+                                        onClick={() =>
+                                            setSelectBankContainer(true)
+                                        }
+                                    >
+                                        <>
+                                            {nameBank === '' ? (
+                                                'Chọn ngân hàng thụ hưởng'
+                                            ) : (
+                                                <span className='text-black'>
+                                                    {nameBank}
+                                                </span>
+                                            )}
+                                        </>
+                                        <i className='fa-light fa-angle-down text-lg'></i>
+                                    </div>
+
+                                    {selectBankContainer && (
+                                        <div
+                                            ref={containerSelectBankRef}
+                                            className=' absolute w-full bg-white top-0 rounded-xl shadow-md'
+                                        >
+                                            <input
+                                                type='text'
+                                                // ref={nameBankRef}
+                                                value={searchBankValue}
+                                                placeholder='Tìm ngân hàng thụ hưởng'
+                                                className='text-[15px] p-[5px] pl-[10px] w-full h-[50px] outline-none bg-[#eff2f7] rounded-xl'
+                                                onChange={(e) => {
+                                                    setSearchBankValue(
+                                                        e.target.value
+                                                    );
+                                                    HANDLE.searchBank();
+                                                }}
+                                            />
+
+                                            <div className='w-full pt-3'>
+                                                <ul className='w-full h-[300px] overflow-y-auto px-2 flex flex-col gap-1'>
+                                                    {resultSearchBanks.map(
+                                                        (bank: BankProps) => {
+                                                            return (
+                                                                <li
+                                                                    key={
+                                                                        bank.id
+                                                                    }
+                                                                    className='flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 cursor-pointer'
+                                                                    onClick={() =>
+                                                                        HANDLE.selectBank(
+                                                                            bank.name
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <figure className='w-[70px]'>
+                                                                        <ImageCustom
+                                                                            src={
+                                                                                bank.logo
+                                                                            }
+                                                                            alt='b-logo'
+                                                                        />
+                                                                    </figure>
+                                                                    <p className='text-sm truncate flex-1'>
+                                                                        {
+                                                                            bank.name
+                                                                        }
+                                                                    </p>
+                                                                </li>
+                                                            );
+                                                        }
+                                                    )}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <div className='w-full mb-[15px]'>
@@ -197,7 +307,9 @@ const GenerateQRCode: React.FC = () => {
                                     className='text-[15px] p-[5px] pl-[10px] w-full h-[50px] mt-1 outline-none bg-[#eff2f7] rounded-xl'
                                     value={accountNumber}
                                     onChange={(e) =>
-                                        setAccountNumber(e.target.value)
+                                        HANDLE.changeAccountNumber(
+                                            e.target.value
+                                        )
                                     }
                                 />
                             </div>
@@ -243,13 +355,13 @@ const GenerateQRCode: React.FC = () => {
                             </button>
                         </div>
                     </div>
-                    <div className='flex-1'>
+                    <div className='flex-1 flex items-center justify-center flex-col w-full'>
                         {qrCode && qrCode.length > 0 ? (
                             <>
-                                <figure className='w-full h-full animate-modal'>
+                                <figure className='w-full h-full animate-modal tablet:animate-fadeInTop'>
                                     <ImageCustom src={qrCode} alt='QR Code' />
                                 </figure>
-                                <div className='mt-2 flex items-center justify-evenly'>
+                                <div className='mt-2 flex items-center justify-evenly tablet:gap-3'>
                                     <button
                                         className='py-2 px-5 bg-gray-300 rounded-lg hover:bg-gray-400'
                                         onClick={HANDLE.resetQR}
@@ -267,11 +379,15 @@ const GenerateQRCode: React.FC = () => {
                                 </div>
                             </>
                         ) : (
-                            <Player autoplay loop src={qr_animation}></Player>
+                            <div className=' tablet:hidden'>
+                                <Player
+                                    autoplay
+                                    loop
+                                    src={qr_animation}
+                                ></Player>
+                            </div>
                         )}
                     </div>
-
-                    <div>{testQRCode}</div>
                 </div>
             </section>
             {openModal && (

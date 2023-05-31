@@ -49,7 +49,7 @@ const ScanQRCode: React.FC = () => {
 
     return (
         <>
-            <section className='w-[90%] mx-auto'>
+            <section className='w-[90%] mx-auto mobile:w-full'>
                 <div className='flex justify-end'>
                     <Link
                         href='/payment/payme-qr'

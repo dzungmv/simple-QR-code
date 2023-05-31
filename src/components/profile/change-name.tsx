@@ -46,7 +46,7 @@ const ChangeDisplayName: React.FC<Props> = ({ close }) => {
     };
 
     return (
-        <div className='w-[550px] p-4'>
+        <div className='w-[550px] p-4 mobile:w-full'>
             <div className='mb-[15px]'>
                 <div className='flex items-center justify-between'>
                     <label className='text-[15px] mb-1'>Tên hiển thị</label>

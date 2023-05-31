@@ -3,9 +3,11 @@ import { persistReducer, persistStore } from 'redux-persist';
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 import userSlice from './slice/userSlice';
+import bankSlice from './slice/bankSlice';
 
 const reducers = combineReducers({
     user: userSlice,
+    bank: bankSlice,
 });
 
 const createNoopStorage = () => {

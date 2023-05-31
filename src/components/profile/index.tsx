@@ -28,7 +28,7 @@ const Profile: React.FC = () => {
     return (
         <>
             <section className='w-full mx-auto'>
-                <div className='w-[65%] mx-auto mt-2 bg-white flex flex-col gap-[6px] rounded-xl p-3 px-4'>
+                <div className='w-[65%] onlyTablet:w-[80%] mobile:w-full mx-auto mt-2 bg-white flex flex-col gap-[6px] rounded-xl p-3 px-4'>
                     <h2 className='font-medium text-lg text-gray-600 mb-2'>
                         Thông tin tài khoản
                     </h2>

@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
 body {
     height: 100%;
     background-color: rgb(246, 247, 249);
@@ -10,4 +11,22 @@ body {
 input:focus {
     box-shadow: 0 0, 0 0 5px #64b864;
     background-color: transparent;
+}
+
+@media (min-width: 600px) {
+    table {
+        display: inline-table !important;
+    }
+
+    thead tr:not(:first-child) {
+        display: none;
+    }
+}
+
+td:not(:last-child) {
+    border-bottom: 0;
+}
+
+th:not(:last-child) {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
