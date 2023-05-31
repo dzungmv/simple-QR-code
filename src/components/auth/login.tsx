@@ -72,6 +72,11 @@ const LoginPage = () => {
                     }
                 });
         },
+        keyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') {
+                HANDLE.signIn();
+            }
+        },
     };
 
     return (
@@ -97,6 +102,7 @@ const LoginPage = () => {
                                 ID tài khoản
                             </label>
                             <input
+                                onKeyDown={HANDLE.keyDown}
                                 type='text'
                                 placeholder='Tên tài khoản'
                                 className='text-[15px] p-[5px] pl-[10px] w-full h-[50px] outline-none bg-[#eff2f7] rounded-xl'
@@ -119,6 +125,7 @@ const LoginPage = () => {
                             <div className=' relative w-full flex items-center justify-center'>
                                 <input
                                     type={hidePassword ? 'text' : 'password'}
+                                    onKeyDown={HANDLE.keyDown}
                                     placeholder='Nhập mật khẩu'
                                     className='text-[15px] p-[5px] pl-[10px] w-full h-[50px] outline-none bg-[#eff2f7] rounded-xl'
                                     onChange={(e) =>
@@ -140,20 +147,6 @@ const LoginPage = () => {
                                 )}
                             </div>
                         </div>
-
-                        {/* <div className='flex items-center mb-[30px]'>
-                            <input
-                                type='checkbox'
-                                id='remember-login'
-                                className='w-[15px] h-[15px] mr-1'
-                            />
-                            <label
-                                htmlFor='remember-login'
-                                className='text-[15px] cursor-pointer select-none -mb-[1px]'
-                            >
-                                Lưu mật khẩu cho lần đăng nhập sau.
-                            </label>
-                        </div> */}
 
                         <button
                             className='h-[50px] flex items-center justify-center w-full outline-primary bg-primary text-white rounded-xl text-lg hover:bg-primaryHover'

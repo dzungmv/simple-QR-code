@@ -91,6 +91,9 @@ const SignupPage = () => {
                     }
                 });
         },
+        keyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+            e.key === 'Enter' && HANDLE.register();
+        },
     };
 
     return (
@@ -148,6 +151,7 @@ const SignupPage = () => {
                                     Email
                                 </label>
                                 <input
+                                    onKeyDown={HANDLE.keyDown}
                                     type='email'
                                     placeholder='Tên email'
                                     className='text-[15px] p-[5px] pl-[10px] w-full h-[50px] outline-none bg-[#eff2f7] rounded-xl'
@@ -171,6 +175,7 @@ const SignupPage = () => {
                                 </div>
                                 <div className=' relative w-full flex items-center justify-center'>
                                     <input
+                                        onKeyDown={HANDLE.keyDown}
                                         type={
                                             hidePassword ? 'text' : 'password'
                                         }
@@ -203,6 +208,7 @@ const SignupPage = () => {
                                 </div>
                                 <div className=' relative w-full flex items-center justify-center'>
                                     <input
+                                        onKeyDown={HANDLE.keyDown}
                                         type={
                                             hideConfirmPassword
                                                 ? 'text'

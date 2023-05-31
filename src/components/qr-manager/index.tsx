@@ -100,7 +100,7 @@ const QRManager: React.FC = () => {
                 <div className='flex items-center justify-end mobile:justify-center gap-2'>
                     <Link
                         href='/payment/paymentpos'
-                        className='px-5 py-4 mobile:p-3 flex items-center justify-center gap-1 w-fit bg-violet-500 rounded-lg shadow-md hover:shadow-lg hover:bg-violet-600 text-white'
+                        className='text-sm px-4 py-3 mobile:p-3 flex items-center justify-center gap-1 w-fit bg-violet-500 rounded-lg shadow-md hover:shadow-lg hover:bg-violet-600 text-white'
                     >
                         <i className='fa-solid fa-scanner-touchscreen'></i>
                         Scan QR Code
@@ -108,24 +108,24 @@ const QRManager: React.FC = () => {
 
                     <Link
                         href='/payment/payme-qr'
-                        className='px-5 py-4 mobile:p-3 flex items-center justify-center gap-1 w-fit bg-primary text-white rounded-lg shadow-md hover:shadow-lg hover:bg-primaryHover'
+                        className='text-sm px-4 py-3 mobile:p-3 flex items-center justify-center gap-1 w-fit bg-primary text-white rounded-lg shadow-md hover:shadow-lg hover:bg-primaryHover'
                     >
                         <i className='fa-solid fa-qrcode'></i>
                         Tạo QR Code
                     </Link>
                 </div>
 
-                <div className='mt-10 rounded-xl bg-white overflow-x-auto'>
+                <div className='mt-5 rounded-xl bg-white overflow-x-auto pb-2'>
                     <h2 className='border-b p-4 text-xl font-medium'>Mã QR</h2>
 
-                    <table className='w-full flex flex-row flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg mobile:text-sm'>
+                    <table className='w-full flex flex-row flex-no-wrap sm:bg-white overflow-hidden sm:shadow-lg text-sm'>
                         <thead className='text-white'>
                             {qrcodes &&
                                 qrcodes.length > 0 &&
-                                qrcodes.map((index: number) => {
+                                qrcodes.map((item: QRManagerProps) => {
                                     return (
                                         <tr
-                                            key={index}
+                                            key={item.qrId}
                                             className='bg-teal-400 flex flex-col flex-no wrap sm:table-row rounded-l-lg mobile:rounded-none mb-2 sm:mb-0'
                                         >
                                             <th className='p-3 text-left mobile:h-[70px] truncate'>
@@ -148,93 +148,89 @@ const QRManager: React.FC = () => {
                         <tbody className='flex-1 sm:flex-none'>
                             {qrcodes &&
                                 qrcodes.length > 0 &&
-                                qrcodes.map(
-                                    (item: QRManagerProps, index: number) => {
-                                        return (
-                                            <tr
-                                                className='flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0'
-                                                key={index}
-                                            >
-                                                <td className='border-grey-light border hover:bg-gray-100 p-3 mobile:h-[70px]'>
-                                                    <figure
-                                                        className='w-[35px] hover:cursor-pointer'
-                                                        style={{
-                                                            cursor:
-                                                                item.qrStatus ===
-                                                                'active'
-                                                                    ? 'pointer'
-                                                                    : 'not-allowed',
-                                                            opacity:
-                                                                item.qrStatus ===
-                                                                'active'
-                                                                    ? 1
-                                                                    : 0.5,
-                                                        }}
-                                                        onClick={() => {
+                                qrcodes.map((item: QRManagerProps) => {
+                                    return (
+                                        <tr
+                                            className='flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0'
+                                            key={item.qrId}
+                                        >
+                                            <td className='border-grey-light border hover:bg-gray-100 p-3 mobile:h-[70px]'>
+                                                <figure
+                                                    className='w-[35px] hover:cursor-pointer'
+                                                    style={{
+                                                        cursor:
                                                             item.qrStatus ===
                                                             'active'
-                                                                ? HANDLE.openModalQR(
-                                                                      item
-                                                                  )
-                                                                : null;
-                                                        }}
+                                                                ? 'pointer'
+                                                                : 'not-allowed',
+                                                        opacity:
+                                                            item.qrStatus ===
+                                                            'active'
+                                                                ? 1
+                                                                : 0.5,
+                                                    }}
+                                                    onClick={() => {
+                                                        item.qrStatus ===
+                                                        'active'
+                                                            ? HANDLE.openModalQR(
+                                                                  item
+                                                              )
+                                                            : null;
+                                                    }}
+                                                >
+                                                    <ImageCustom
+                                                        src={
+                                                            'https://sbx-mc.payme.vn/assets/img/icon-qrcode.svg'
+                                                        }
+                                                        alt='qr-code'
+                                                    />
+                                                </figure>
+                                            </td>
+                                            <td className='border-grey-light border hover:bg-gray-100 p-3 mobile:h-[50px]'>
+                                                {item.username ?? 'User'}
+                                            </td>
+                                            <td className='border-grey-light border hover:bg-gray-100 p-3 mobile:h-[50px]'>
+                                                {item.email}
+                                            </td>
+                                            <td className='border-grey-light border hover:bg-gray-100 p-3 mobile:h-[50px]'>
+                                                {item.qrStatus === 'active' ? (
+                                                    <span className='bg-[#00a67e] p-2 rounded-full px-3 text-white truncate text-xs'>
+                                                        Đang hoạt động
+                                                    </span>
+                                                ) : (
+                                                    <span className='bg-red-500 p-2 rounded-full px-3 text-white text-xs'>
+                                                        Không khả dụng
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className='pr-3 border-grey-light border hover:bg-gray-100 p-3 mobile:h-[50px] truncate'>
+                                                {item.qrStatus === 'active' ? (
+                                                    <div
+                                                        className='p-2 bg-red-500 text-white rounded-lg px-5 py-2  w-fit flex items-center justify-center hover:bg-red-600 hover:cursor-pointer'
+                                                        onClick={() =>
+                                                            HANDLE.deactiveQR(
+                                                                item
+                                                            )
+                                                        }
                                                     >
-                                                        <ImageCustom
-                                                            src={
-                                                                'https://sbx-mc.payme.vn/assets/img/icon-qrcode.svg'
-                                                            }
-                                                            alt='qr-code'
-                                                        />
-                                                    </figure>
-                                                </td>
-                                                <td className='border-grey-light border hover:bg-gray-100 p-3 mobile:h-[50px]'>
-                                                    {item.username ?? 'User'}
-                                                </td>
-                                                <td className='border-grey-light border hover:bg-gray-100 p-3 mobile:h-[50px]'>
-                                                    {item.email}
-                                                </td>
-                                                <td className='border-grey-light border hover:bg-gray-100 p-3 mobile:h-[50px]'>
-                                                    {item.qrStatus ===
-                                                    'active' ? (
-                                                        <span className='bg-[#00a67e] p-2 rounded-full px-3 text-white truncate'>
-                                                            Đang hoạt động
-                                                        </span>
-                                                    ) : (
-                                                        <span className='bg-red-500 p-2 rounded-full px-3 text-white'>
-                                                            Không khả dụng
-                                                        </span>
-                                                    )}
-                                                </td>
-                                                <td className='pr-3 border-grey-light border hover:bg-gray-100 p-3 mobile:h-[50px] truncate'>
-                                                    {item.qrStatus ===
-                                                    'active' ? (
-                                                        <div
-                                                            className='p-2 bg-red-500 text-white rounded-xl px-7 py-2  w-fit flex items-center justify-center hover:bg-red-600 hover:cursor-pointer'
-                                                            onClick={() =>
-                                                                HANDLE.deactiveQR(
-                                                                    item
-                                                                )
-                                                            }
-                                                        >
-                                                            <i className='fa-brands fa-creative-commons-nc-eu'></i>
-                                                        </div>
-                                                    ) : (
-                                                        <div
-                                                            className='p-1 bg-green-500 text-white w-fit rounded-xl px-7 py-2  flex items-center justify-center hover:bg-green-600 hover:cursor-pointer'
-                                                            onClick={() =>
-                                                                HANDLE.activeQR(
-                                                                    item
-                                                                )
-                                                            }
-                                                        >
-                                                            <i className='fa-solid fa-wave-pulse'></i>
-                                                        </div>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        );
-                                    }
-                                )}
+                                                        <i className='fa-brands fa-creative-commons-nc-eu'></i>
+                                                    </div>
+                                                ) : (
+                                                    <div
+                                                        className='p-1 bg-green-500 text-white w-fit rounded-lg px-5 py-2  flex items-center justify-center hover:bg-green-600 hover:cursor-pointer'
+                                                        onClick={() =>
+                                                            HANDLE.activeQR(
+                                                                item
+                                                            )
+                                                        }
+                                                    >
+                                                        <i className='fa-solid fa-wave-pulse'></i>
+                                                    </div>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                         </tbody>
                     </table>
                 </div>

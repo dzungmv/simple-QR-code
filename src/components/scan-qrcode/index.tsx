@@ -2,14 +2,15 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import swal from 'sweetalert';
 
-import qr_scan_animation from '../../../public/scan-qr.json';
 import { Player } from '@lottiefiles/react-lottie-player';
+import qr_scan_animation from '../../../public/scan-qr.json';
 import Modal from '../modal';
 
 const QrReader = require('react-qr-reader');
 
 const ScanQRCode: React.FC = () => {
     const [access, setAccess] = useState<boolean>(false);
+    const [camera, setCamera] = useState<boolean>(false);
     const [data, setData] = useState<string>('');
     const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -47,6 +48,28 @@ const ScanQRCode: React.FC = () => {
         }
     }, [data]);
 
+    // useEffect(() => {
+    //     const scanner = new Html5QrcodeScanner(
+    //         'reader',
+    //         { fps: 10, qrbox: { width: 250, height: 250 } },
+    //         /* verbose= */ false
+    //     );
+
+    //     scanner.render(onScanSuccess, onScanFailure);
+
+    //     function onScanSuccess(qrCodeMessage: any) {
+    //         scanner.clear();
+    //         if (qrCodeMessage) {
+    //             setData(qrCodeMessage);
+    //         }
+    //     }
+
+    //     function onScanFailure(error: any) {
+    //         // handle on failure condition
+    //         console.log('error', error);
+    //     }
+    // }, []);
+
     return (
         <>
             <section className='w-[90%] mx-auto mobile:w-full'>
@@ -67,6 +90,7 @@ const ScanQRCode: React.FC = () => {
                                 delay={1000}
                                 onError={HANDLE.handleError}
                                 onScan={HANDLE.handleScan}
+                                onImageLoad={HANDLE.closeCamera}
                                 // chooseDeviceId={()=>selected}
                                 style={{ width: '350px' }}
                             />
@@ -92,6 +116,10 @@ const ScanQRCode: React.FC = () => {
                         </button>
                     )}
                 </div>
+                {/* <div
+                    id='reader'
+                    className='w-[500px] h-[500px] flex items-center justify-center'
+                ></div> */}
             </section>
 
             {openModal && (
