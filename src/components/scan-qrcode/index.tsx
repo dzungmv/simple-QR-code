@@ -5,14 +5,17 @@ import swal from 'sweetalert';
 import { Player } from '@lottiefiles/react-lottie-player';
 import qr_scan_animation from '../../../public/scan-qr.json';
 import Modal from '../modal';
+import { useRouter } from 'next/navigation';
 
 const QrReader = require('react-qr-reader');
 
 const ScanQRCode: React.FC = () => {
+    const router = useRouter();
     const [access, setAccess] = useState<boolean>(false);
-    const [camera, setCamera] = useState<boolean>(false);
     const [data, setData] = useState<string>('');
     const [openModal, setOpenModal] = useState<boolean>(false);
+
+    const cameraRef = React.useRef<any>(null);
 
     const HANDLE = {
         askCameraPermission: () => {
@@ -37,8 +40,12 @@ const ScanQRCode: React.FC = () => {
                 setData(data);
             }
         },
-        closeCamera: () => {
+        closeCamera: async () => {
+            await cameraRef.current?.clearComponent();
             setAccess(false);
+        },
+        turnOnCamera: () => {
+            cameraRef.current?.handleVideo();
         },
     };
 
@@ -48,27 +55,13 @@ const ScanQRCode: React.FC = () => {
         }
     }, [data]);
 
-    // useEffect(() => {
-    //     const scanner = new Html5QrcodeScanner(
-    //         'reader',
-    //         { fps: 10, qrbox: { width: 250, height: 250 } },
-    //         /* verbose= */ false
-    //     );
-
-    //     scanner.render(onScanSuccess, onScanFailure);
-
-    //     function onScanSuccess(qrCodeMessage: any) {
-    //         scanner.clear();
-    //         if (qrCodeMessage) {
-    //             setData(qrCodeMessage);
-    //         }
-    //     }
-
-    //     function onScanFailure(error: any) {
-    //         // handle on failure condition
-    //         console.log('error', error);
-    //     }
-    // }, []);
+    useEffect(() => {
+        return () => {
+            if (access) {
+                cameraRef.current?.clearComponent();
+            }
+        };
+    }, [access]);
 
     return (
         <>
@@ -86,12 +79,12 @@ const ScanQRCode: React.FC = () => {
                     {access ? (
                         <div className='w-full flex items-center justify-center'>
                             <QrReader
-                                facingMode='environment'
-                                delay={1000}
+                                ref={cameraRef}
+                                facingMode='user'
+                                // legacyMode={false}
+                                delay={300}
                                 onError={HANDLE.handleError}
                                 onScan={HANDLE.handleScan}
-                                onImageLoad={HANDLE.closeCamera}
-                                // chooseDeviceId={()=>selected}
                                 style={{ width: '350px' }}
                             />
                         </div>
@@ -108,12 +101,21 @@ const ScanQRCode: React.FC = () => {
                             Mở camera
                         </button>
                     ) : (
-                        <button
-                            className='px-4 py-3 bg-gray-500 rounded-lg hover:bg-gray-600 text-white mt-5'
-                            onClick={HANDLE.closeCamera}
-                        >
-                            Tắt camera
-                        </button>
+                        <>
+                            <button
+                                className='px-4 py-3 bg-gray-500 rounded-lg hover:bg-gray-600 text-white mt-5'
+                                onClick={HANDLE.closeCamera}
+                            >
+                                Tắt camera
+                            </button>
+
+                            <button
+                                className='px-4 py-3 bg-gray-500 rounded-lg hover:bg-gray-600 text-white mt-5'
+                                onClick={HANDLE.turnOnCamera}
+                            >
+                                Bat camera
+                            </button>
+                        </>
                     )}
                 </div>
                 {/* <div

@@ -8,7 +8,7 @@ export default function Balances() {
             <Head>
                 <title>Balance - Payme</title>
             </Head>
-            <h2>Balances</h2>
+            <section>Balances</section>
         </>
     );
 }

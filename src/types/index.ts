@@ -16,3 +16,12 @@ export type BankProps = {
     transferSupported: number;
     lookupSupported: number;
 };
+
+export type IdentifyProps = {
+    id: string;
+    email: string;
+    name: string;
+    imageFront: string;
+    imageBack: string;
+    status: 'pending' | 'approved' | 'rejected';
+};

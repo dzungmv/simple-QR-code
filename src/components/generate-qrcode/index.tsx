@@ -157,6 +157,10 @@ const GenerateQRCode: React.FC = () => {
     };
 
     useEffect(() => {
+        // check camera stack
+    }, []);
+
+    useEffect(() => {
         if (dataScan) {
             //   check if dataScan is have nameBank, accountNumber, username set to state
             if (
@@ -170,7 +174,12 @@ const GenerateQRCode: React.FC = () => {
                 setUsername(data.username);
                 setOpenModal(false);
             } else {
-                swal('Thông báo', 'Có lỗi xảy ra', 'error');
+                // setOpenModal(false);
+                swal(
+                    'Thông báo',
+                    'QR Code không hợp lệ, vui lòng thử lại QR Code khác',
+                    'error'
+                );
             }
         }
     }, [dataScan]);
