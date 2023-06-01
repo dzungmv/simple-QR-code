@@ -16,7 +16,6 @@ export default function Home() {
             const res = await axios.get('https://api.vietqr.io/v2/banks');
             const bankData = res?.data?.data;
             dispatch(setBank(bankData));
-            console.log('check re-render');
         })();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps

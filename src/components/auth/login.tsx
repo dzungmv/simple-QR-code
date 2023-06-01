@@ -26,8 +26,6 @@ const LoginPage = () => {
             setLoginPending(true);
             await signInWithEmailAndPassword(auth, username, password)
                 .then((res) => {
-                    console.log('check user', res);
-
                     dispatch(
                         setUser({
                             uid: res?.user?.uid,

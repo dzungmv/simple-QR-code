@@ -1,18 +1,21 @@
-import { getDatabase, onValue, ref, update } from 'firebase/database';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import ImageCustom from '../image';
-import LoadingScreen from '../loading';
-import Modal from '../modal';
-import IdentifyTable from './identify-table';
-import { IdentifyProps, UserProps } from '@/types';
-import { useDispatch, useSelector } from 'react-redux';
 import {
     selectIdentify,
     selectUser,
     setIdentify,
 } from '@/redux/slice/userSlice';
-import { Id } from '@reduxjs/toolkit/dist/tsHelpers';
+import { IdentifyProps, UserProps } from '@/types';
+import { getDatabase, onValue, ref, update } from 'firebase/database';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import ImageCustom from '../image';
+import LoadingScreen from '../loading';
+import Modal from '../modal';
+import IdentifyTable from './identify-table';
+
+import identify_animation from '../../../public/identify.json';
+import { Player } from '@lottiefiles/react-lottie-player';
+import { useRouter } from 'next/navigation';
 
 interface QRManagerProps {
     qrId: string;
@@ -30,10 +33,9 @@ interface QRManagerProps {
 
 const QRManager: React.FC = () => {
     const dispatch = useDispatch();
+    const router = useRouter();
     const user: UserProps = useSelector(selectUser);
     const identify: IdentifyProps = useSelector(selectIdentify);
-
-    console.log('identify', identify);
 
     const [qrcodes, setQrcodes] = useState<QRManagerProps[]>([]);
     const [fetchPending, setFetchPending] = useState<boolean>(true);
@@ -157,7 +159,7 @@ const QRManager: React.FC = () => {
                 </div>
 
                 <div className='mt-5 rounded-xl bg-white overflow-x-auto pb-2'>
-                    <div className='border-b text-xl font-medium flex items-center'>
+                    <div className='border-b font-medium flex items-center'>
                         <div
                             className='px-3 py-2 hover:bg-gray-200 hover:cursor-pointer relative'
                             onClick={() => setTableQR(true)}
@@ -357,8 +359,36 @@ const QRManager: React.FC = () => {
                     close={() => setModalIdentify(false)}
                 >
                     <div className='w-[550px] p-4'>
-                        Vui lòng xác thực tài khoản để sử dụng các tính năng của
-                        PayME
+                        <Player
+                            style={{
+                                width: '170px',
+                                marginTop: '-50px',
+                            }}
+                            src={identify_animation}
+                            autoplay
+                            loop
+                        />
+                        <p className='-mt-8'>
+                            Vui lòng xác thực tài khoản để sử dụng các tính năng
+                            của PayME
+                        </p>
+
+                        <div className='mt-10 flex items-center justify-end gap-3'>
+                            <button
+                                className='p-3 py-2 rounded-lg text-sm hover:bg-gray-200'
+                                onClick={() => setModalIdentify(false)}
+                            >
+                                Để sau
+                            </button>
+                            <button
+                                className='px-4 py-2 rounded-lg bg-primary text-sm font-medium text-white'
+                                onClick={() =>
+                                    router.push('/account/profiles/kyc')
+                                }
+                            >
+                                Xác thực
+                            </button>
+                        </div>
                     </div>
                 </Modal>
             )}

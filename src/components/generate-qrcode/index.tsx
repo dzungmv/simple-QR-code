@@ -120,11 +120,7 @@ const GenerateQRCode: React.FC = () => {
             setAccess(false);
         },
         searchBank: () => {
-            console.log('searchBankValue', typeof searchBankValue);
-
             const res = banks.filter((bank: BankProps) => {
-                console.log('bank', typeof bank.bin);
-
                 return (
                     bank.name
                         .toLowerCase()

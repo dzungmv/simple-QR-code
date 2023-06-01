@@ -4,8 +4,6 @@ import Head from 'next/head';
 import { ReactNode } from 'react';
 
 export default function PaymeQR() {
-    // console.log('Check', posts);
-
     return (
         <>
             <Head>
