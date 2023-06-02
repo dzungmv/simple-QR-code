@@ -13,6 +13,7 @@ import qr_animation from '../../../public/qr-animation.json';
 import qr_scan_animation from '../../../public/scan-qr.json';
 import ImageCustom from '../image';
 import Modal from '../modal';
+import BarcodeScannerComponent from 'react-qr-barcode-scanner';
 
 const QRCode = require('qrcode');
 const QrReader = require('react-qr-reader');
@@ -32,6 +33,7 @@ const GenerateQRCode: React.FC = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
 
     const [access, setAccess] = useState<boolean>(false);
+    const [stopStream, setStopStream] = useState<boolean>(false);
     const [dataScan, setDataScan] = useState<string>('');
 
     const containerSelectBankRef = useRef<HTMLDivElement>(null);
@@ -102,6 +104,7 @@ const GenerateQRCode: React.FC = () => {
                     },
                 })
                 .then((stream: any) => {
+                    setStopStream(false);
                     setAccess(true);
                 })
                 .catch((err: any) => {
@@ -117,6 +120,7 @@ const GenerateQRCode: React.FC = () => {
             }
         },
         closeCamera: () => {
+            setStopStream(true);
             setAccess(false);
         },
         searchBank: () => {
@@ -151,10 +155,6 @@ const GenerateQRCode: React.FC = () => {
             });
         },
     };
-
-    useEffect(() => {
-        // check camera stack
-    }, []);
 
     useEffect(() => {
         if (dataScan) {
@@ -404,13 +404,25 @@ const GenerateQRCode: React.FC = () => {
                     <div className='w-[700px] flex items-center flex-col justify-center p-4'>
                         {access ? (
                             <div className='w-full flex items-center justify-center'>
-                                <QrReader
+                                {/* <QrReader
                                     facingMode='environment'
                                     delay={1000}
                                     onError={HANDLE.handleError}
                                     onScan={HANDLE.handleScan}
                                     // chooseDeviceId={()=>selected}
                                     style={{ width: '350px' }}
+                                /> */}
+                                <BarcodeScannerComponent
+                                    width='350px'
+                                    height='350px'
+                                    onUpdate={(err: any, result: any) => {
+                                        if (result) {
+                                            setDataScan(result?.text);
+                                        } else {
+                                            setDataScan('');
+                                        }
+                                    }}
+                                    stopStream={stopStream}
                                 />
                             </div>
                         ) : (

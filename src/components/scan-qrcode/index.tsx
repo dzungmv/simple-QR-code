@@ -3,20 +3,19 @@ import React, { useEffect, useState } from 'react';
 import swal from 'sweetalert';
 
 import { Player } from '@lottiefiles/react-lottie-player';
+import BarcodeScannerComponent from 'react-qr-barcode-scanner';
 import qr_scan_animation from '../../../public/scan-qr.json';
 import Modal from '../modal';
-import { useRouter } from 'next/navigation';
-import BarcodeScannerComponent from 'react-qr-barcode-scanner';
 
-const QrReader = require('react-qr-reader');
+// const QrReader = require('react-qr-reader');
 
 const ScanQRCode: React.FC = () => {
-    const router = useRouter();
     const [access, setAccess] = useState<boolean>(false);
+    const [stopStream, setStopStream] = useState<boolean>(false);
     const [data, setData] = useState<string>('');
     const [openModal, setOpenModal] = useState<boolean>(false);
 
-    const cameraRef = React.useRef<any>(null);
+    // const cameraRef = React.useRef<any>(null);
 
     const HANDLE = {
         askCameraPermission: () => {
@@ -27,6 +26,7 @@ const ScanQRCode: React.FC = () => {
                     },
                 })
                 .then((stream: any) => {
+                    setStopStream(false);
                     setAccess(true);
                 })
                 .catch((err: any) => {
@@ -42,11 +42,8 @@ const ScanQRCode: React.FC = () => {
             }
         },
         closeCamera: async () => {
-            await cameraRef.current?.clearComponent();
+            setStopStream(true);
             setAccess(false);
-        },
-        turnOnCamera: () => {
-            cameraRef.current?.handleVideo();
         },
     };
 
@@ -55,14 +52,6 @@ const ScanQRCode: React.FC = () => {
             setOpenModal(true);
         }
     }, [data]);
-
-    useEffect(() => {
-        return () => {
-            if (access) {
-                cameraRef.current?.clearComponent();
-            }
-        };
-    }, [access]);
 
     return (
         <>
@@ -99,6 +88,7 @@ const ScanQRCode: React.FC = () => {
                                         setData('');
                                     }
                                 }}
+                                stopStream={stopStream}
                             />
                         </div>
                     ) : (
@@ -122,10 +112,6 @@ const ScanQRCode: React.FC = () => {
                         </button>
                     )}
                 </div>
-                {/* <div
-                    id='reader'
-                    className='w-[500px] h-[500px] flex items-center justify-center'
-                ></div> */}
             </section>
 
             {openModal && (
