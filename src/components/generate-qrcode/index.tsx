@@ -13,10 +13,15 @@ import qr_animation from '../../../public/qr-animation.json';
 import qr_scan_animation from '../../../public/scan-qr.json';
 import ImageCustom from '../image';
 import Modal from '../modal';
-import BarcodeScannerComponent from 'react-qr-barcode-scanner';
+import dynamic from 'next/dynamic';
+// import BarcodeScannerComponent from 'react-qr-barcode-scanner';
+
+const BarcodeScannerComponent = dynamic(
+    () => import('react-qr-barcode-scanner'),
+    { ssr: false }
+);
 
 const QRCode = require('qrcode');
-const QrReader = require('react-qr-reader');
 const { v4: uuidv4 } = require('uuid');
 
 const GenerateQRCode: React.FC = () => {
@@ -404,14 +409,6 @@ const GenerateQRCode: React.FC = () => {
                     <div className='w-[700px] flex items-center flex-col justify-center p-4'>
                         {access ? (
                             <div className='w-full flex items-center justify-center'>
-                                {/* <QrReader
-                                    facingMode='environment'
-                                    delay={1000}
-                                    onError={HANDLE.handleError}
-                                    onScan={HANDLE.handleScan}
-                                    // chooseDeviceId={()=>selected}
-                                    style={{ width: '350px' }}
-                                /> */}
                                 <BarcodeScannerComponent
                                     width='350px'
                                     height='350px'

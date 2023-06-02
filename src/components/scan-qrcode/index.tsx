@@ -3,19 +3,21 @@ import React, { useEffect, useState } from 'react';
 import swal from 'sweetalert';
 
 import { Player } from '@lottiefiles/react-lottie-player';
-import BarcodeScannerComponent from 'react-qr-barcode-scanner';
+// import BarcodeScannerComponent from 'react-qr-barcode-scanner';
 import qr_scan_animation from '../../../public/scan-qr.json';
 import Modal from '../modal';
+import dynamic from 'next/dynamic';
 
-// const QrReader = require('react-qr-reader');
+const BarcodeScannerComponent = dynamic(
+    () => import('react-qr-barcode-scanner'),
+    { ssr: false }
+);
 
 const ScanQRCode: React.FC = () => {
     const [access, setAccess] = useState<boolean>(false);
     const [stopStream, setStopStream] = useState<boolean>(false);
     const [data, setData] = useState<string>('');
     const [openModal, setOpenModal] = useState<boolean>(false);
-
-    // const cameraRef = React.useRef<any>(null);
 
     const HANDLE = {
         askCameraPermission: () => {
@@ -68,16 +70,6 @@ const ScanQRCode: React.FC = () => {
                 <div className='mt-5 bg-white flex items-center justify-center flex-col py-5 shadow-sm rounded-lg'>
                     {access ? (
                         <div className='w-full flex items-center justify-center'>
-                            {/* <QrReader
-                                ref={cameraRef}
-                                facingMode='user'
-                                // legacyMode={false}
-                                delay={300}
-                                onError={HANDLE.handleError}
-                                onScan={HANDLE.handleScan}
-                                style={{ width: '350px' }}
-                            /> */}
-
                             <BarcodeScannerComponent
                                 width='350px'
                                 height='350px'
