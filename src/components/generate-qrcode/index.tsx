@@ -373,7 +373,7 @@ const GenerateQRCode: React.FC = () => {
                                 <figure className='w-full h-full animate-modal tablet:animate-fadeInTop'>
                                     <ImageCustom src={qrCode} alt='QR Code' />
                                 </figure>
-                                <div className='mt-2 flex items-center justify-evenly tablet:gap-3'>
+                                <div className='mt-2 flex items-center justify-evenly gap-2 tablet:gap-3'>
                                     <button
                                         className='py-2 px-5 bg-gray-300 rounded-lg hover:bg-gray-400'
                                         onClick={HANDLE.resetQR}
