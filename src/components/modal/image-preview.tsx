@@ -66,7 +66,7 @@ const ImagePreview: React.FC<ModalProps> = ({
                         ref={modalRef}
                     >
                         <figure className=''>
-                            <ImageCustom src={imgURL} alt='preview' />
+                            <ImageCustom src={imgURL ?? ''} alt='preview' />
                         </figure>
                     </div>
                 </section>

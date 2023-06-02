@@ -5,7 +5,7 @@ const NavBar: React.FC = () => {
     const pathname = usePathname();
 
     return (
-        <nav className='flex flex-col gap-1 w-full mb-4'>
+        <nav className='flex flex-col gap-1 w-full mb-4 bg-white z-50'>
             <Link
                 href='/'
                 className='flex items-center gap-1 p-2 rounded-lg hover:bg-slate-100 cursor-pointer transition-all duration-300 text-[#272b41]'

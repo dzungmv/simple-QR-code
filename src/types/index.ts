@@ -23,5 +23,6 @@ export type IdentifyProps = {
     name: string;
     imageFront: string;
     imageBack: string;
+    avatar: string;
     status: 'pending' | 'approved' | 'rejected';
 };

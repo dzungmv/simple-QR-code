@@ -55,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({
                     onClick={closeOutside ? handleClickOutside : undefined}
                 >
                     <div
-                        className='bg-white rounded-lg shadow-xl animate-modal mobile:w-full'
+                        className='bg-white rounded-lg shadow-xl animate-modal mobile:w-full mobile:mt-4'
                         ref={modalRef}
                     >
                         <div className='p-2 shadow-sm relative'>

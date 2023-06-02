@@ -121,6 +121,8 @@ const QRManager: React.FC = () => {
             const data = snapshot.val();
             dispatch(setIdentify(data));
         });
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -139,7 +141,7 @@ const QRManager: React.FC = () => {
 
     return (
         <>
-            <section className=''>
+            <section className='w-full'>
                 <div className='flex items-center justify-end mobile:justify-center gap-2'>
                     <Link
                         href='/payment/paymentpos'
@@ -158,10 +160,10 @@ const QRManager: React.FC = () => {
                     </Link>
                 </div>
 
-                <div className='mt-5 rounded-xl bg-white overflow-x-auto pb-2'>
-                    <div className='border-b font-medium flex items-center'>
+                <div className='mt-5 rounded-xl bg-white overflow-x-auto pb-2 w-full'>
+                    <div className='border-b font-medium flex items-center mobile:justify-between'>
                         <div
-                            className='px-3 py-2 hover:bg-gray-200 hover:cursor-pointer relative'
+                            className='px-3 py-2 hover:bg-gray-200 hover:cursor-pointer mobile:text-sm relative'
                             onClick={() => setTableQR(true)}
                         >
                             Danh sách QR Code
@@ -171,7 +173,7 @@ const QRManager: React.FC = () => {
                         </div>
 
                         <div
-                            className='px-3 py-2 hover:bg-gray-200 hover:cursor-pointer relative'
+                            className='px-3 py-2 hover:bg-gray-200 hover:cursor-pointer relative mobile:text-sm'
                             onClick={() => setTableQR(false)}
                         >
                             Định danh tài khoản
@@ -358,7 +360,7 @@ const QRManager: React.FC = () => {
                     open={modalIdentify}
                     close={() => setModalIdentify(false)}
                 >
-                    <div className='w-[550px] p-4'>
+                    <div className='w-[550px] p-4 mobile:w-full'>
                         <Player
                             style={{
                                 width: '170px',
