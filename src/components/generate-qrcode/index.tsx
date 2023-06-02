@@ -406,9 +406,9 @@ const GenerateQRCode: React.FC = () => {
                     title='Scan banking QR Code'
                     open={openModal}
                     close={() => {
-                        setOpenModal(false);
                         setStopStream(true);
                         setAccess(false);
+                        setOpenModal(false);
                     }}
                 >
                     <div className='w-[700px] flex items-center flex-col justify-center p-4'>

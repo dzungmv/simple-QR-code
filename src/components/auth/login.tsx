@@ -2,27 +2,50 @@
 import { useState } from 'react';
 import ImageCustom from '../image';
 import Link from 'next/link';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import {
+    sendPasswordResetEmail,
+    signInWithEmailAndPassword,
+} from 'firebase/auth';
 import { auth } from '@/firebase/config';
 import swal from 'sweetalert';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/slice/userSlice';
 import LoadingScreen from '../loading';
+import Modal from '../modal';
 
 const LoginPage = () => {
     const dispatch = useDispatch();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
+    const [email, setEmail] = useState<string>('');
+
     const [hidePassword, setHidePassword] = useState<boolean>(false);
 
     const [loginPending, setLoginPending] = useState<boolean>(false);
 
+    const [modalForgotPassword, setModalForgotPassword] =
+        useState<boolean>(false);
+
     const HANDLE = {
+        validationEmail: (email: string) => {
+            const regex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+            return regex.test(email);
+        },
         unHidePassword: () => {
             setHidePassword((prev) => !prev);
         },
         signIn: async () => {
+            if (!username || !password) {
+                swal('Thông báo', 'Vui lòng nhập đầy đủ thông tin', 'warning');
+                return;
+            }
+
+            if (!HANDLE.validationEmail(username)) {
+                swal('Thông báo', 'Email không hợp lệ', 'warning');
+                return;
+            }
+
             setLoginPending(true);
             await signInWithEmailAndPassword(auth, username, password)
                 .then((res) => {
@@ -76,6 +99,42 @@ const LoginPage = () => {
                 HANDLE.signIn();
             }
         },
+        keyDownForgotPassword: (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') {
+                HANDLE.sendResetPassword();
+            }
+        },
+        sendResetPassword: async () => {
+            if (!email) {
+                swal('Thông báo', 'Vui lòng nhập email', 'error');
+                return;
+            }
+
+            if (!HANDLE.validationEmail(email)) {
+                swal('Thông báo', 'Email không hợp lệ', 'error');
+                return;
+            }
+            setLoginPending(true);
+            await sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    setLoginPending(false);
+                    swal(
+                        'Thông báo',
+                        'Vui lòng kiểm tra email để lấy lại mật khẩu',
+                        'success'
+                    );
+
+                    setModalForgotPassword(false);
+                })
+                .catch((err) => {
+                    setLoginPending(false);
+                    console.log(err);
+
+                    if (err.code === 'auth/user-not-found') {
+                        swal('Thông báo', 'Email không tồn tại', 'error');
+                    }
+                });
+        },
     };
 
     return (
@@ -97,13 +156,11 @@ const LoginPage = () => {
 
                     <div className='w-[450px] mobile:w-full'>
                         <div className='w-full mb-[15px]'>
-                            <label className='text-[15px] mb-1'>
-                                ID tài khoản
-                            </label>
+                            <label className='text-[15px] mb-1'>Email</label>
                             <input
                                 onKeyDown={HANDLE.keyDown}
                                 type='text'
-                                placeholder='Tên tài khoản'
+                                placeholder='Nhập email'
                                 className='text-[15px] p-[5px] pl-[10px] w-full h-[50px] outline-none bg-[#eff2f7] rounded-xl'
                                 onChange={(e) => setUsername(e.target.value)}
                             />
@@ -114,12 +171,12 @@ const LoginPage = () => {
                                 <label className='text-[15px] mb-1'>
                                     Mật khẩu
                                 </label>
-                                <Link
-                                    className='text-[15px] text-primary hover:underline'
-                                    href={'#'}
+                                <div
+                                    className='text-[15px] text-primary hover:underline hover:cursor-pointer'
+                                    onClick={() => setModalForgotPassword(true)}
                                 >
                                     Quên mật khẩu?
-                                </Link>
+                                </div>
                             </div>
                             <div className=' relative w-full flex items-center justify-center'>
                                 <input
@@ -167,6 +224,43 @@ const LoginPage = () => {
                 </div>
             </main>
             {loginPending && <LoadingScreen />}
+            {modalForgotPassword && (
+                <Modal
+                    title='Quên mật khẩu'
+                    open={modalForgotPassword}
+                    close={() => setModalForgotPassword(false)}
+                >
+                    <div className='w-[550px] mobile:w-full p-4'>
+                        <p className='mb-4'>
+                            Vui lòng nhập email của bạn để lấy lại mật khẩu
+                        </p>
+                        <input
+                            onKeyDown={HANDLE.keyDownForgotPassword}
+                            type='text'
+                            placeholder='Nhập email'
+                            className='text-[15px] p-[5px] pl-[10px] w-full h-[50px] outline-none bg-[#eff2f7] rounded-xl'
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+
+                        <div className='flex items-center justify-end mt-7 gap-2'>
+                            <button
+                                className='p-2 text-sm font-medium rounded-lg hover:bg-gray-200'
+                                onClick={() => {
+                                    setModalForgotPassword(false);
+                                }}
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                className='p-2 px-3 rounded-lg text-white text-sm font-medium bg-primary hover:bg-primaryHover'
+                                onClick={HANDLE.sendResetPassword}
+                            >
+                                Gửi xác nhận
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
         </>
     );
 };

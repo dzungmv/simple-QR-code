@@ -30,7 +30,7 @@ const Profile: React.FC = () => {
         <>
             <Head>
                 <title>
-                    {user.displayName ?? ' Thông tin tài khoản'} - Payme
+                    {user?.displayName ?? ' Thông tin tài khoản'} - Payme
                 </title>
             </Head>
             <section className='w-full mx-auto'>

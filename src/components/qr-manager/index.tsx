@@ -130,7 +130,7 @@ const QRManager: React.FC = () => {
     }, [openModalQR]);
 
     useEffect(() => {
-        if (!identify || identify.status === 'rejected') {
+        if (!identify || (identify && identify.status === 'rejected')) {
             setTimeout(() => {
                 setModalIdentify(true);
             }, 3000);
