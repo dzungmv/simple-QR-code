@@ -111,7 +111,7 @@ const QRManager: React.FC = () => {
 
     useEffect(() => {
         const db = getDatabase();
-        const starCountRef = ref(db, 'identifys/' + user.uid);
+        const starCountRef = ref(db, 'identifys/' + user?.uid);
 
         onValue(starCountRef, (snapshot) => {
             if (!snapshot.exists()) {

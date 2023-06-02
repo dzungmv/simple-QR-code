@@ -25,7 +25,7 @@ const IdentifyTable: React.FC = () => {
 
             const updates = {} as any;
 
-            updates['/identifys/' + identify.id] = qrData;
+            updates['/identifys/' + identify?.id] = qrData;
 
             return update(ref(db), updates);
         },

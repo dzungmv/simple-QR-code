@@ -12,7 +12,13 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     const uid = user?.uid;
 
     useEffect(() => {
-        !uid ? router.push('/login') : router.push(pathname);
+        if (!uid) {
+            router.push('/login');
+        } else if (uid && pathname === '/login') {
+            router.push('/');
+        } else {
+            router.push(pathname);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [uid]);
     return <>{children}</>;
