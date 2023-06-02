@@ -14,6 +14,7 @@ import qr_scan_animation from '../../../public/scan-qr.json';
 import ImageCustom from '../image';
 import Modal from '../modal';
 import dynamic from 'next/dynamic';
+import axios from 'axios';
 // import BarcodeScannerComponent from 'react-qr-barcode-scanner';
 
 const BarcodeScannerComponent = dynamic(
