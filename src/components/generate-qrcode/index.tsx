@@ -173,6 +173,7 @@ const GenerateQRCode: React.FC = () => {
                 setNameBank(data.nameBank);
                 setAccountNumber(data.accountNumber);
                 setUsername(data.username);
+                setStopStream(true);
                 setOpenModal(false);
             } else {
                 // setOpenModal(false);
@@ -404,7 +405,11 @@ const GenerateQRCode: React.FC = () => {
                 <Modal
                     title='Scan banking QR Code'
                     open={openModal}
-                    close={() => setOpenModal(false)}
+                    close={() => {
+                        setOpenModal(false);
+                        setStopStream(true);
+                        setAccess(false);
+                    }}
                 >
                     <div className='w-[700px] flex items-center flex-col justify-center p-4'>
                         {access ? (
