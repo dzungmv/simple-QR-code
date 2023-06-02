@@ -2,7 +2,7 @@
 const nextConfig = {
     reactStrictMode: true,
     images: {
-        domains: ['api.vietqr.io', 'vietqr.net'],
+        domains: ['api.vietqr.io', 'vietqr.net', 'i.ibb.co'],
     },
     env: {
         FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
@@ -13,6 +13,7 @@ const nextConfig = {
         FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
         FIREBASE_MEAUREMENT_ID: process.env.FIREBASE_MEAUREMENT_ID,
         FIREBASE_DATABASE_URL: process.env.FIREBASE_DATABASE_URL,
+        IMGBB_API_KEY: process.env.IMGBB_API_KEY
     },
 };
 
