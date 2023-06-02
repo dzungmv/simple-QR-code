@@ -6,6 +6,7 @@ import { Player } from '@lottiefiles/react-lottie-player';
 import qr_scan_animation from '../../../public/scan-qr.json';
 import Modal from '../modal';
 import { useRouter } from 'next/navigation';
+import BarcodeScannerComponent from 'react-qr-barcode-scanner';
 
 const QrReader = require('react-qr-reader');
 
@@ -78,7 +79,7 @@ const ScanQRCode: React.FC = () => {
                 <div className='mt-5 bg-white flex items-center justify-center flex-col py-5 shadow-sm rounded-lg'>
                     {access ? (
                         <div className='w-full flex items-center justify-center'>
-                            <QrReader
+                            {/* <QrReader
                                 ref={cameraRef}
                                 facingMode='user'
                                 // legacyMode={false}
@@ -86,6 +87,18 @@ const ScanQRCode: React.FC = () => {
                                 onError={HANDLE.handleError}
                                 onScan={HANDLE.handleScan}
                                 style={{ width: '350px' }}
+                            /> */}
+
+                            <BarcodeScannerComponent
+                                width='350px'
+                                height='350px'
+                                onUpdate={(err: any, result: any) => {
+                                    if (result) {
+                                        setData(result?.text);
+                                    } else {
+                                        setData('');
+                                    }
+                                }}
                             />
                         </div>
                     ) : (
@@ -101,21 +114,12 @@ const ScanQRCode: React.FC = () => {
                             Mở camera
                         </button>
                     ) : (
-                        <>
-                            <button
-                                className='px-4 py-3 bg-gray-500 rounded-lg hover:bg-gray-600 text-white mt-5'
-                                onClick={HANDLE.closeCamera}
-                            >
-                                Tắt camera
-                            </button>
-
-                            <button
-                                className='px-4 py-3 bg-gray-500 rounded-lg hover:bg-gray-600 text-white mt-5'
-                                onClick={HANDLE.turnOnCamera}
-                            >
-                                Bat camera
-                            </button>
-                        </>
+                        <button
+                            className='px-4 py-3 bg-gray-500 rounded-lg hover:bg-gray-600 text-white mt-5'
+                            onClick={HANDLE.closeCamera}
+                        >
+                            Tắt camera
+                        </button>
                     )}
                 </div>
                 {/* <div
